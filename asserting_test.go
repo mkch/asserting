@@ -192,3 +192,45 @@ func TestFatal(t1 *testing.T) {
 		t1.Fatal(mock.FatalMessages)
 	}
 }
+
+func TestAssertTrue(t1 *testing.T) {
+	mock := &MockTB{TB: t1}
+	t := NewTB(mock)
+
+	t.AssertTrue(true)
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.AssertTrue(1 == 0)
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected false condition" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+}
+
+func TestAssertNoError(t1 *testing.T) {
+	mock := &MockTB{TB: t1}
+	t := NewTB(mock)
+
+	t.AssertNoError(nil)
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.AssertNoError(errors.New("err"))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected error <err>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+}

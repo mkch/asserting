@@ -14,6 +14,11 @@ type TB struct {
 	testing.TB
 }
 
+// NewTB creates a TB.
+func NewTB(t testing.TB) TB {
+	return TB{t}
+}
+
 // Assert asserts v meets the condition c.
 // If v does not meet c, the assertion fails and a failure message
 // is reported. See the document of cond.Cond.
@@ -30,6 +35,16 @@ func (t TB) Assert(v interface{}, c cond.Cond) {
 		}
 		f(cond.Message(c, v))
 	}
+}
+
+// AssertTrue asserts the condition is true.
+func (t TB) AssertTrue(condition bool) {
+	t.Assert(condition, Equals(true).SetMessage("unexpected false condition"))
+}
+
+// AssertNoError asserts the err is nil.
+func (t TB) AssertNoError(err error) {
+	t.Assert(err, Equals(nil).SetMessage(fmt.Sprintf("unexpected error <%v>", err)))
 }
 
 type hasError struct {
