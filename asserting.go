@@ -77,37 +77,23 @@ func Equals(expected interface{}) cond.Cond {
 }
 
 func (c *equals) Test(v interface{}) bool {
-	if c.expected == nil {
-		return equalsNil(v)
-	}
-	if v == nil {
-		return equalsNil(c.expected)
-	}
-	return v == c.expected
+	return eq(c.expected, v)
 }
 
 func (c *equals) Message(v interface{}) string {
-	return fmt.Sprintf("expected <%v> but was <%v>", c.expected, v)
+	return formatMsg("expected <%v> but was <%v>", c.expected, v)
 }
 
-type notEquals struct {
-	unexpected interface{}
-}
+type notEquals equals
 
 // NotEquals returns a cond which is true if a value does not equal to the expected value.
 // The inequality is determined with operator !=
 func NotEquals(unexpected interface{}) cond.Cond {
-	return cond.New(&notEquals{unexpected: unexpected})
+	return cond.New((*notEquals)(&notEquals{expected: unexpected}))
 }
 
 func (c *notEquals) Test(v interface{}) bool {
-	if c.unexpected == nil {
-		return !equalsNil(v)
-	}
-	if v == nil {
-		return !equalsNil(c.unexpected)
-	}
-	return v != c.unexpected
+	return !((*equals)(c)).Test(v)
 }
 
 func (c *notEquals) Message(v interface{}) string {
@@ -151,7 +137,7 @@ func (c *panics) Test(v interface{}) (result bool) {
 
 	defer func() {
 		c.got = recover()
-		result = c.expected == c.got
+		result = eq(c.expected, c.got)
 	}()
 
 	f()
@@ -164,7 +150,7 @@ func (c *panics) Message(v interface{}) string {
 	if c.got == nil {
 		nilExplain = " (didn't panic?)"
 	}
-	return fmt.Sprintf("expected to panic with <%v> but <%v>"+nilExplain, c.expected, c.got)
+	return formatMsg("expected to panic with <%v> but <%v>"+nilExplain, c.expected, c.got)
 }
 
 type panicMatches struct {
@@ -256,7 +242,189 @@ func (c *equalsSlice) Test(v interface{}) bool {
 }
 
 func (c *equalsSlice) Message(v interface{}) string {
-	return fmt.Sprintf("expected <%v> but was <%v>", c.expected, v)
+	return formatMsg("expected <%v> but was <%v>", c.expected, v)
+}
+
+type untypedInt int64
+
+func (i untypedInt) equals(r interface{}) bool {
+	tr := reflect.TypeOf(r)
+	if tr == nil {
+		return false
+	}
+	switch tr.Kind() {
+	case reflect.Int:
+		fallthrough
+	case reflect.Int8:
+		fallthrough
+	case reflect.Int16:
+		fallthrough
+	case reflect.Int32:
+		fallthrough
+	case reflect.Int64:
+		return int64(i) == reflect.ValueOf(r).Int()
+	case reflect.Uint:
+		fallthrough
+	case reflect.Uint8:
+		fallthrough
+	case reflect.Uint16:
+		fallthrough
+	case reflect.Uint32:
+		fallthrough
+	case reflect.Uint64:
+		return int64(i) >= 0 && uint64(i) == reflect.ValueOf(r).Uint()
+	case reflect.Float32:
+		fallthrough
+	case reflect.Float64:
+		return float64(i) == reflect.ValueOf(r).Float()
+	default:
+		return false
+	}
+}
+
+// UntypedInt returns an untyped integer which equals other integer or float types
+// if they have the same value.
+func UntypedInt(n int64) interface{} {
+	return untypedInt(n)
+}
+
+type untypedUint uint64
+
+func (i untypedUint) equals(r interface{}) bool {
+	tr := reflect.TypeOf(r)
+	if tr == nil {
+		return false
+	}
+	switch tr.Kind() {
+	case reflect.Uint:
+		fallthrough
+	case reflect.Uint8:
+		fallthrough
+	case reflect.Uint16:
+		fallthrough
+	case reflect.Uint32:
+		fallthrough
+	case reflect.Uint64:
+		return uint64(i) == reflect.ValueOf(r).Uint()
+	case reflect.Int:
+		fallthrough
+	case reflect.Int8:
+		fallthrough
+	case reflect.Int16:
+		fallthrough
+	case reflect.Int32:
+		fallthrough
+	case reflect.Int64:
+		v := reflect.ValueOf(r).Int()
+		return v >= 0 && uint64(i) == uint64(v)
+	case reflect.Float32:
+		fallthrough
+	case reflect.Float64:
+		return float64(i) == reflect.ValueOf(r).Float()
+	default:
+		return false
+	}
+}
+
+type ieq interface {
+	equals(r interface{}) bool
+}
+
+// UntypedUint returns an untyped integer which is reported by Assert equal to
+// values of integer or float types if they have the same value.
+func UntypedUint(n int64) interface{} {
+	return untypedUint(n)
+}
+
+type untypedFloat float64
+
+func (f untypedFloat) equals(r interface{}) bool {
+	tr := reflect.TypeOf(r)
+	if tr == nil {
+		return false
+	}
+	switch tr.Kind() {
+	case reflect.Float32:
+		fallthrough
+	case reflect.Float64:
+		return float64(f) == reflect.ValueOf(r).Float()
+	default:
+		return false
+	}
+}
+
+// UntypedFloat returns an untyped float point value which is reported by Assert equal to
+// values of float32 or float64 types if they have the same value.
+func UntypedFloat(f float64) interface{} {
+	return untypedFloat(f)
+}
+
+type untypedString string
+
+func (s untypedString) equals(r interface{}) bool {
+	tr := reflect.TypeOf(r)
+	if tr == nil {
+		return false
+	}
+	switch tr.Kind() {
+	case reflect.String:
+		return string(s) == reflect.ValueOf(r).String()
+	default:
+		return false
+	}
+}
+
+// UntypedString returns an untyped string value which is reported by Assert equal to
+// values of string types if they have the same value.
+func UntypedString(str string) interface{} {
+	return untypedString(str)
+}
+
+type untypedComplex complex128
+
+func (c untypedComplex) equals(r interface{}) bool {
+	tr := reflect.TypeOf(r)
+	if tr == nil {
+		return false
+	}
+	switch tr.Kind() {
+	case reflect.Complex64:
+		fallthrough
+	case reflect.Complex128:
+		return complex128(c) == reflect.ValueOf(r).Complex()
+	default:
+		return false
+	}
+}
+
+// UntypedComplex returns an untyped complex value which is reported by Assert equal to
+// values of complex64 or complex128 types if have the same value.
+func UntypedComplex(c complex128) interface{} {
+	return untypedComplex(c)
+}
+
+func eq(a, b interface{}) bool {
+	if a == b {
+		return true
+	}
+
+	if a == nil {
+		return equalsNil(b)
+	}
+
+	if b == nil {
+		return equalsNil(a)
+	}
+
+	if ieq, ok := a.(ieq); ok {
+		return ieq.equals(b)
+	}
+
+	if ieq, ok := b.(ieq); ok {
+		return ieq.equals(a)
+	}
+
+	return false
 }
 
 // equalsNil tests whether v is a nil interface value or the value of v == nil.
@@ -283,4 +451,14 @@ func equalsNil(v interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func formatMsg(format string, arg1, arg2 interface{}) string {
+	str1, str2 := fmt.Sprintf("%v", arg1), fmt.Sprintf("%v", arg2)
+	if str1 == str2 {
+		arg1, arg2 = fmt.Sprintf("%[1]v(%[1]T)", arg1), fmt.Sprintf("%[1]v(%[1]T)", arg2)
+	} else {
+		arg1, arg2 = str1, str2
+	}
+	return fmt.Sprintf(format, arg1, arg2)
 }

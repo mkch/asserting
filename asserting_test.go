@@ -298,7 +298,7 @@ func TestAssertNil(t1 *testing.T) {
 
 	if len(mock.ErrorMessages) != 1 ||
 		len(mock.ErrorMessages[0]) != 1 ||
-		mock.ErrorMessages[0][0] != "expected <<nil>> but was <<nil>>" {
+		mock.ErrorMessages[0][0] != "expected <<nil>(*uint8)> but was <<nil>(*int)>" {
 		t1.Fatal(mock.ErrorMessages)
 	}
 
@@ -428,6 +428,287 @@ func TestAssertNil(t1 *testing.T) {
 	if len(mock.ErrorMessages) != 1 ||
 		len(mock.ErrorMessages[0]) != 1 ||
 		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+}
+
+func TestAssertUntyped(t1 *testing.T) {
+	mock := &MockTB{TB: t1}
+	t := NewTB(mock)
+
+	t.Assert(100, Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint8(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int16(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int32(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int64(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint8(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint16(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint32(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint64(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(100, Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint8(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int16(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int32(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int64(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint8(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint16(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint32(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(uint64(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(-100, Equals(UntypedInt(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int8(-100), Equals(UntypedInt(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int16(-100), Equals(UntypedInt(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int32(-100), Equals(UntypedInt(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(int64(-100), Equals(UntypedInt(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(float32(-100), Equals(UntypedFloat(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(float64(-100), Equals(UntypedFloat(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedFloat(-100), Equals(float32(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedFloat(-100), Equals(float64(-100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedInt(100), Equals(uint16(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedInt(100), Equals(UntypedInt(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedInt(100), Equals(UntypedUint(100)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert("abc", Equals(UntypedString("abc")))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedString("abc"), Equals("abc"))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedString("abc"), Equals(UntypedString("abc")))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(complex(1, 2), Equals(UntypedComplex(complex(1, 2))))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedComplex(complex(1, 2)), Equals(complex(1, 2)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedComplex(complex(1, 2)), Equals(UntypedComplex(complex(1, 2))))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedComplex(complex(1, 2)), NotEquals(UntypedComplex(complex(1, 3))))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(float32(123), Equals(UntypedUint(123)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(UntypedInt(-123), Equals(float32(-123)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(nil, NotEquals(UntypedInt(-123)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	t.Assert(1, Equals(UntypedInt(2)))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "expected <2> but was <1>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+
+	t.Assert(1, Equals(UntypedFloat(2)))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "expected <2> but was <1>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+
+	t.Assert("abc", Equals(UntypedString("def")))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "expected <def> but was <abc>" {
 		t1.Fatal(mock.ErrorMessages)
 	}
 }
