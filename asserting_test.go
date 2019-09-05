@@ -3,6 +3,7 @@ package asserting_test
 import (
 	"errors"
 	"testing"
+	"unsafe"
 
 	. "github.com/mkch/asserting"
 )
@@ -231,6 +232,202 @@ func TestAssertNoError(t1 *testing.T) {
 	if len(mock.ErrorMessages) != 1 ||
 		len(mock.ErrorMessages[0]) != 1 ||
 		mock.ErrorMessages[0][0] != "unexpected error <err>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+}
+
+func TestAssertNil(t1 *testing.T) {
+	mock := &MockTB{TB: t1}
+	t := NewTB(mock)
+
+	t.Assert(nil, Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((*int)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert(([]int)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((map[int]int)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((func())(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((unsafe.Pointer)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((chan int)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((error)(nil), Equals(nil))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert(nil, Equals((*int)(nil)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((*int)(nil), Equals((*byte)(nil)))
+
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "expected <<nil>> but was <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	// Test NotEquals
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+
+	t.Assert((*byte)(nil), NotEquals((*int)(nil)))
+
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert((error)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert(([]int)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <[]>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert((chan int)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert((unsafe.Pointer)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert((func())(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert((map[int]int)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <map[]>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert(([]int)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <[]>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert((*int)(nil), NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert(nil, NotEquals(nil))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
+		t1.Fatal(mock.ErrorMessages)
+	}
+
+	mock.ErrorMessages = nil
+	mock.FatalMessages = nil
+	t.Assert(nil, NotEquals((*int)(nil)))
+	if len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+	if len(mock.ErrorMessages) != 1 ||
+		len(mock.ErrorMessages[0]) != 1 ||
+		mock.ErrorMessages[0][0] != "unexpected <<nil>>" {
 		t1.Fatal(mock.ErrorMessages)
 	}
 }

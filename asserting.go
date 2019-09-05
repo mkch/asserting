@@ -77,6 +77,12 @@ func Equals(expected interface{}) cond.Cond {
 }
 
 func (c *equals) Test(v interface{}) bool {
+	if c.expected == nil {
+		return equalsNil(v)
+	}
+	if v == nil {
+		return equalsNil(c.expected)
+	}
 	return v == c.expected
 }
 
@@ -95,6 +101,12 @@ func NotEquals(unexpected interface{}) cond.Cond {
 }
 
 func (c *notEquals) Test(v interface{}) bool {
+	if c.unexpected == nil {
+		return !equalsNil(v)
+	}
+	if v == nil {
+		return !equalsNil(c.unexpected)
+	}
 	return v != c.unexpected
 }
 
@@ -245,4 +257,30 @@ func (c *equalsSlice) Test(v interface{}) bool {
 
 func (c *equalsSlice) Message(v interface{}) string {
 	return fmt.Sprintf("expected <%v> but was <%v>", c.expected, v)
+}
+
+// equalsNil tests whether v is a nil interface value or the value of v == nil.
+func equalsNil(v interface{}) bool {
+	t := reflect.TypeOf(v)
+	if t == nil {
+		return true
+	}
+	switch t.Kind() {
+	case reflect.Chan:
+		fallthrough
+	case reflect.Func:
+		fallthrough
+	case reflect.Interface:
+		fallthrough
+	case reflect.Map:
+		fallthrough
+	case reflect.Slice:
+		fallthrough
+	case reflect.Ptr:
+		fallthrough
+	case reflect.UnsafePointer:
+		return reflect.ValueOf(v).IsNil()
+	default:
+		return false
+	}
 }
