@@ -47,6 +47,36 @@ func (t TB) AssertNoError(err error) {
 	t.Assert(err, Equals(nil).SetMessage(fmt.Sprintf("unexpected error <%v>", err)))
 }
 
+// AssertEqual calls t.Assert(v, Equals(expected)).
+func (t TB) AssertEqual(v, expected interface{}) {
+	t.Assert(v, Equals(expected))
+}
+
+// AssertEqualSlice calls t.Assert(v, EqualsSlice(expected)).
+func (t TB) AssertEqualSlice(v, expected interface{}) {
+	t.Assert(v, EqualsSlice(expected))
+}
+
+// AssertNotEqual calls t.Assert(v, NotEquals(expected)).
+func (t TB) AssertNotEqual(v, expected interface{}) {
+	t.Assert(v, NotEquals(expected))
+}
+
+// AssertMatch calls t.Assert(v, Matches(f)).
+func (t TB) AssertMatch(v, f func(v interface{}) bool) {
+	t.Assert(v, Matches(f))
+}
+
+// AssertPanic calls t.Assert(v, Panics(expected)).
+func (t TB) AssertPanic(v func(), expected interface{}) {
+	t.Assert(v, Panics(expected))
+}
+
+// AssertPanicMatch calls t.Assert(v, PanicMatches(f)).
+func (t TB) AssertPanicMatch(v func(), f func(expected interface{}) bool) {
+	t.Assert(v, PanicMatches(f))
+}
+
 type hasError struct {
 	message string
 }
@@ -123,7 +153,7 @@ type panics struct {
 }
 
 // Panics returns a cond which is true if the tested function panics with the expected value.
-// TB.Assert() panics if a the tested value is not of type func() when this kind of cond
+// Test() panics if a the tested value is not of type func() when this kind of cond
 // is used.
 func Panics(expected interface{}) cond.Cond {
 	return cond.New(&panics{expected: expected})
