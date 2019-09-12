@@ -39,41 +39,49 @@ func (t TB) Assert(v interface{}, c cond.Cond) {
 
 // AssertTrue asserts the condition is true.
 func (t TB) AssertTrue(condition bool) {
+	t.Helper()
 	t.Assert(condition, Equals(true).SetMessage("unexpected false condition"))
 }
 
 // AssertNoError asserts the err is nil.
 func (t TB) AssertNoError(err error) {
+	t.Helper()
 	t.Assert(err, Equals(nil).SetMessage(fmt.Sprintf("unexpected error <%v>", err)))
 }
 
 // AssertEqual calls t.Assert(v, Equals(expected)).
 func (t TB) AssertEqual(v, expected interface{}) {
+	t.Helper()
 	t.Assert(v, Equals(expected))
 }
 
 // AssertEqualSlice calls t.Assert(v, EqualsSlice(expected)).
 func (t TB) AssertEqualSlice(v, expected interface{}) {
+	t.Helper()
 	t.Assert(v, EqualsSlice(expected))
 }
 
 // AssertNotEqual calls t.Assert(v, NotEquals(expected)).
 func (t TB) AssertNotEqual(v, expected interface{}) {
+	t.Helper()
 	t.Assert(v, NotEquals(expected))
 }
 
 // AssertMatch calls t.Assert(v, Matches(f)).
 func (t TB) AssertMatch(v, f func(v interface{}) bool) {
+	t.Helper()
 	t.Assert(v, Matches(f))
 }
 
 // AssertPanic calls t.Assert(v, Panics(expected)).
 func (t TB) AssertPanic(v func(), expected interface{}) {
+	t.Helper()
 	t.Assert(v, Panics(expected))
 }
 
 // AssertPanicMatch calls t.Assert(v, PanicMatches(f)).
 func (t TB) AssertPanicMatch(v func(), f func(expected interface{}) bool) {
+	t.Helper()
 	t.Assert(v, PanicMatches(f))
 }
 
