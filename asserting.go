@@ -87,6 +87,7 @@ func (t TB) AssertPanicMatch(v func(), f func(expected interface{}) bool) {
 
 type hasError struct {
 	message string
+	fatal   bool
 }
 
 // ValueError converts v and err to a single value.
@@ -94,12 +95,21 @@ type hasError struct {
 // If TB.Assert(ValueError(v, err), cond)
 // is called,  one of the following 2 things will happen:
 //
-// 1. If err is not nil, the assertion fails with message "unexpected error".
+// 1. If err is not nil, the assertion fails with t.Error("unexpected error ...").
 //
-// 2. If err is not nil, the code is executed the same way as TB.Assert(v, cond)
+// 2. If err is nil, the code is executed the same way as TB.Assert(v, cond)
 func ValueError(v interface{}, err error) interface{} {
 	if err != nil {
-		return &hasError{fmt.Sprintf("unexpected error <%v>", err)}
+		return &hasError{message: fmt.Sprintf("unexpected error <%v>", err)}
+	}
+	return v
+}
+
+// ValueErrorFatal is equivalent to ValueError except one thing:
+// 1. If err is not nil, the assertion fails with t.Fatal("unexpected error ...").
+func ValueErrorFatal(v interface{}, err error) interface{} {
+	if err != nil {
+		return &hasError{message: fmt.Sprintf("unexpected error <%v>", err), fatal: true}
 	}
 	return v
 }
