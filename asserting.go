@@ -25,7 +25,11 @@ func NewTB(t testing.TB) TB {
 func (t TB) Assert(v interface{}, c cond.Cond) {
 	t.Helper()
 	if err, ok := v.(*hasError); ok {
-		t.Assert(0, Equals(nil).SetMessage(err.message))
+		c := Equals(nil).SetMessage(err.message)
+		if err.fatal {
+			c.SetFatal()
+		}
+		t.Assert(0, c)
 		return
 	}
 	if !c.Test(v) {
