@@ -72,7 +72,7 @@ func (t TB) AssertNotEqual(v, expected interface{}) {
 }
 
 // AssertMatch calls t.Assert(v, Matches(f)).
-func (t TB) AssertMatch(v, f func(v interface{}) bool) {
+func (t TB) AssertMatch(v interface{}, f func(v interface{}) bool) {
 	t.Helper()
 	t.Assert(v, Matches(f))
 }
