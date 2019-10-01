@@ -290,6 +290,14 @@ func (c *equalsSlice) Test(v interface{}) bool {
 		panic(fmt.Sprintf("type mismatch: <%v> and <%v>", t1, t2))
 	}
 
+	if v1.IsNil() && v2.Len() == 0 {
+		return true
+	}
+
+	if v2.IsNil() && v1.Len() == 0 {
+		return true
+	}
+
 	return reflect.DeepEqual(v, c.expected)
 }
 

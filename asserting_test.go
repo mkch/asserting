@@ -137,6 +137,51 @@ func TestEqualsSlice(t1 *testing.T) {
 	mock := &MockTB{TB: t1}
 	t := TB{mock}
 
+	t.Assert(nil, EqualsSlice([]int{}))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert(nil, EqualsSlice(nil))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert(nil, EqualsSlice([]int(nil)))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int(nil), EqualsSlice([]int{}))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int(nil), EqualsSlice(nil))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int(nil), EqualsSlice([]int(nil)))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int{}, EqualsSlice([]int{}))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int{}, EqualsSlice(nil))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
+	t.Assert([]int{}, EqualsSlice([]int(nil)))
+	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
+		t1.Fatal()
+	}
+
 	t.Assert([]int{1, 2, 3}, EqualsSlice([]int{1, 2, 3}))
 	if len(mock.ErrorMessages) != 0 || len(mock.FatalMessages) != 0 {
 		t1.Fatal()
